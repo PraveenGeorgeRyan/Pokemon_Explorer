@@ -1,14 +1,16 @@
 // This file contains functions to fetch data from the PokeAPI
 
-// Define types for the API responses
+// Types for Pokemon API responses
 export interface PokemonListResponse {
   count: number;
   next: string | null;
   previous: string | null;
-  results: {
-    name: string;
-    url: string;
-  }[];
+  results: PokemonListItem[];
+}
+
+export interface PokemonListItem {
+  name: string;
+  url: string;
 }
 
 export interface PokemonDetail {
@@ -60,36 +62,42 @@ const API_BASE_URL = 'https://pokeapi.co/api/v2';
 
 /**
  * Fetches a list of Pokemon from the PokeAPI
- * @param limit - Number of Pokemon to fetch
- * @param offset - Starting position for pagination
- * @returns Promise with the Pokemon list data
+ * @param limit Number of Pokemon to fetch (default: 151 - original Pokemon)
+ * @returns Array of Pokemon list items
  */
-export async function getPokemonList(limit: number = 20, offset: number = 0): Promise<PokemonListResponse> {
-  // Using the built-in fetch API to make a GET request
-  const response = await fetch(`${API_BASE_URL}/pokemon?limit=${limit}&offset=${offset}`);
-  
-  // Check if the request was successful
-  if (!response.ok) {
-    throw new Error(`Failed to fetch Pokemon list: ${response.status}`);
+export async function getPokemonList(limit: number = 151): Promise<PokemonListItem[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pokemon?limit=${limit}`);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Pokemon list: ${response.status}`);
+    }
+    
+    const data: PokemonListResponse = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error('Error fetching Pokemon list:', error);
+    return []; // Return empty array instead of throwing to prevent app crashes
   }
-  
-  // Parse the JSON response
-  const data = await response.json();
-  return data;
 }
 
 /**
  * Fetches detailed information about a specific Pokemon
- * @param nameOrId - The name or ID of the Pokemon
- * @returns Promise with the Pokemon details
+ * @param idOrName Pokemon ID or name
+ * @returns Detailed Pokemon information
  */
-export async function getPokemonDetail(nameOrId: string | number): Promise<PokemonDetail> {
-  const response = await fetch(`${API_BASE_URL}/pokemon/${nameOrId}`);
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch Pokemon details: ${response.status}`);
+export async function getPokemonDetail(idOrName: string): Promise<PokemonDetail | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pokemon/${idOrName}`);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Pokemon detail: ${response.status}`);
+    }
+    
+    const data: PokemonDetail = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Error fetching Pokemon detail for ${idOrName}:`, error);
+    throw error; // We need to throw here so the UI can show an error message
   }
-  
-  const data = await response.json();
-  return data;
 }

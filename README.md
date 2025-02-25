@@ -1,8 +1,10 @@
 # Pokémon Explorer
 
-A modern, responsive web application that allows users to explore information about Pokémon using data from the PokéAPI.
+<div align="center">
+  <img src="public/assets/images/pikachu and ash.jpg" alt="Pokémon Explorer" width="600" />
+</div>
 
-![Pokémon Explorer](https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png)
+A modern, responsive web application that allows users to explore information about Pokémon using data from the PokéAPI.
 
 ## Overview
 

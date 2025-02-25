@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -22,27 +22,7 @@ const formatStatName = (stat: string): string => {
 
 // Helper function to get color based on Pokemon type
 const getTypeColor = (type: string): string => {
-  const typeColors: Record<string, string> = {
-    normal: 'bg-gray-400',
-    fire: 'bg-red-500',
-    water: 'bg-blue-500',
-    electric: 'bg-yellow-400',
-    grass: 'bg-green-500',
-    ice: 'bg-blue-200',
-    fighting: 'bg-red-700',
-    poison: 'bg-purple-500',
-    ground: 'bg-yellow-600',
-    flying: 'bg-indigo-300',
-    psychic: 'bg-pink-500',
-    bug: 'bg-green-400',
-    rock: 'bg-yellow-700',
-    ghost: 'bg-purple-700',
-    dragon: 'bg-indigo-600',
-    dark: 'bg-gray-700',
-    steel: 'bg-gray-500',
-    fairy: 'bg-pink-300',
-  };
-  return typeColors[type] || 'bg-gray-400';
+  return `type-${type}`;
 };
 
 export default function PokemonDetailPage() {
@@ -53,6 +33,8 @@ export default function PokemonDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'stats' | 'moves'>('stats');
+  const [isRotating, setIsRotating] = useState(false);
+  const [animationType, setAnimationType] = useState<'rotate' | 'float' | 'bounce'>('float');
 
   useEffect(() => {
     async function fetchPokemonDetail() {
@@ -70,6 +52,33 @@ export default function PokemonDetailPage() {
 
     fetchPokemonDetail();
   }, [pokemonId]);
+
+  const toggleAnimation = () => {
+    if (!isRotating) {
+      setIsRotating(true);
+      setAnimationType('rotate');
+    } else {
+      // Cycle through animation types
+      if (animationType === 'rotate') {
+        setAnimationType('float');
+      } else if (animationType === 'float') {
+        setAnimationType('bounce');
+      } else {
+        setIsRotating(false);
+        setAnimationType('float');
+      }
+    }
+  };
+
+  const getAnimationClass = () => {
+    if (!isRotating) return '';
+    switch (animationType) {
+      case 'rotate': return 'animate-rotate';
+      case 'float': return 'animate-float';
+      case 'bounce': return 'animate-bounce-slow';
+      default: return '';
+    }
+  };
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -95,15 +104,15 @@ export default function PokemonDetailPage() {
   const imageUrl = pokemon.sprites.other['official-artwork'].front_default || pokemon.sprites.front_default;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-900 pokemon-pattern">
       <div className="container mx-auto px-4 py-8">
-        <Link href="/" className="inline-flex items-center text-blue-600 hover:underline mb-6">
+        <Link href="/" className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors mb-6 shadow-md">
           &larr; Back to Homepage
         </Link>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl overflow-hidden">
           {/* Pokemon Header */}
-          <div className="bg-red-600 text-white p-6">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6">
             <div className="flex justify-between items-center">
               <h1 className="text-3xl font-bold">{formattedName}</h1>
               <span className="text-xl font-semibold">#{pokemon.id}</span>
@@ -112,43 +121,46 @@ export default function PokemonDetailPage() {
 
           <div className="md:flex">
             {/* Pokemon Image */}
-            <div className="md:w-1/3 p-6 flex justify-center items-center bg-gray-100 dark:bg-gray-700">
-              <div className="relative h-64 w-64">
+            <div className="md:w-1/3 p-6 flex flex-col justify-center items-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-slate-700 dark:to-slate-800 rounded-lg m-4">
+              <div className="relative h-64 w-64 cursor-pointer" onClick={toggleAnimation}>
                 <Image
                   src={imageUrl}
                   alt={formattedName}
                   fill
-                  className="object-contain"
+                  className={`object-contain transition-all duration-300 ${getAnimationClass()}`}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </div>
+              <p className="mt-4 text-sm text-gray-600 dark:text-gray-300 text-center">
+                Click on the Pokémon to {isRotating ? 'change animation' : 'animate'}!
+              </p>
             </div>
 
             {/* Pokemon Details */}
             <div className="md:w-2/3 p-6">
               {/* Basic Info */}
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">Basic Info</h2>
+              <div className="mb-6 bg-gray-50 dark:bg-slate-700 p-4 rounded-lg">
+                <h2 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Basic Info</h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-gray-600 dark:text-gray-400">Height</p>
-                    <p className="font-medium">{pokemon.height / 10} m</p>
+                    <p className="text-gray-600 dark:text-gray-300">Height</p>
+                    <p className="font-medium text-gray-800 dark:text-white">{pokemon.height / 10} m</p>
                   </div>
                   <div>
-                    <p className="text-gray-600 dark:text-gray-400">Weight</p>
-                    <p className="font-medium">{pokemon.weight / 10} kg</p>
+                    <p className="text-gray-600 dark:text-gray-300">Weight</p>
+                    <p className="font-medium text-gray-800 dark:text-white">{pokemon.weight / 10} kg</p>
                   </div>
                 </div>
               </div>
 
               {/* Types */}
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">Types</h2>
+              <div className="mb-6 bg-gray-50 dark:bg-slate-700 p-4 rounded-lg">
+                <h2 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Types</h2>
                 <div className="flex gap-2">
                   {pokemon.types.map((typeInfo) => (
                     <span
                       key={typeInfo.type.name}
-                      className={`${getTypeColor(typeInfo.type.name)} text-white px-3 py-1 rounded-full text-sm font-medium`}
+                      className={`type-${typeInfo.type.name} text-white px-3 py-1 rounded-full text-sm font-medium`}
                     >
                       {typeInfo.type.name.charAt(0).toUpperCase() + typeInfo.type.name.slice(1)}
                     </span>
@@ -157,13 +169,13 @@ export default function PokemonDetailPage() {
               </div>
 
               {/* Abilities */}
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">Abilities</h2>
+              <div className="mb-6 bg-gray-50 dark:bg-slate-700 p-4 rounded-lg">
+                <h2 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Abilities</h2>
                 <div className="flex flex-wrap gap-2">
                   {pokemon.abilities.map((abilityInfo) => (
                     <span
                       key={abilityInfo.ability.name}
-                      className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium"
+                      className="bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-100 px-3 py-1 rounded-full text-sm font-medium"
                     >
                       {abilityInfo.ability.name.replace('-', ' ')}
                       {abilityInfo.is_hidden && ' (Hidden)'}
@@ -198,42 +210,45 @@ export default function PokemonDetailPage() {
                 </nav>
               </div>
 
-              {/* Tab Content */}
-              {activeTab === 'stats' ? (
-                <div>
-                  <h2 className="text-xl font-semibold mb-2">Base Stats</h2>
-                  <div className="space-y-3">
-                    {pokemon.stats.map((statInfo) => (
-                      <div key={statInfo.stat.name}>
+              {/* Stats Tab Content */}
+              {activeTab === 'stats' && (
+                <div className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg">
+                  <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Base Stats</h2>
+                  <div className="space-y-4">
+                    {pokemon.stats.map((stat) => (
+                      <div key={stat.stat.name} className="mb-2">
                         <div className="flex justify-between mb-1">
-                          <span className="font-medium">{formatStatName(statInfo.stat.name)}</span>
-                          <span>{statInfo.base_stat}</span>
+                          <span className="text-gray-700 dark:text-gray-300">{formatStatName(stat.stat.name)}</span>
+                          <span className="text-gray-900 dark:text-white font-medium">{stat.base_stat}</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
                           <div
                             className="bg-blue-600 h-2.5 rounded-full"
-                            style={{ width: `${Math.min(100, (statInfo.base_stat / 255) * 100)}%` }}
+                            style={{ width: `${Math.min(100, (stat.base_stat / 255) * 100)}%` }}
                           ></div>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-              ) : (
-                <div>
-                  <h2 className="text-xl font-semibold mb-2">Moves</h2>
+              )}
+
+              {/* Moves Tab Content */}
+              {activeTab === 'moves' && (
+                <div className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg">
+                  <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Moves</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {pokemon.moves.slice(0, 15).map((moveInfo) => (
                       <span
                         key={moveInfo.move.name}
-                        className="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded text-sm"
+                        className="bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200 px-3 py-1 rounded text-sm capitalize"
                       >
                         {moveInfo.move.name.replace('-', ' ')}
                       </span>
                     ))}
                     {pokemon.moves.length > 15 && (
                       <span className="text-gray-500 dark:text-gray-400 text-sm italic">
-                        + {pokemon.moves.length - 15} more moves
+                        +{pokemon.moves.length - 15} more moves
                       </span>
                     )}
                   </div>

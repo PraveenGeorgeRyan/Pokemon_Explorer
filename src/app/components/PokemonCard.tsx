@@ -1,48 +1,52 @@
-'use client';
-
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
 
 interface PokemonCardProps {
+  id: number;
   name: string;
-  url: string;
+  image: string;
+  types?: string[];
 }
 
-export default function PokemonCard({ name, url }: PokemonCardProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // Extract the Pokemon ID from the URL
-  const id = url.split('/').filter(Boolean).pop();
-  
-  // Format the Pokemon name to be more readable
-  const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
-  
-  // Image URL for the Pokemon
-  const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+export default function PokemonCard({ id, name, types = [] }: PokemonCardProps) {
+  const paddedId = String(id).padStart(3, '0');
+  const imageUrl = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${paddedId}.png`;
+  const mainType = types.length > 0 ? types[0].toLowerCase() : 'normal';
 
   return (
-    <Link href={`/pokemon/${id}`} className="block">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-        <div className="relative h-48 bg-gray-100 dark:bg-gray-700">
-          <Image
-            src={imageUrl}
-            alt={formattedName}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className={`object-contain p-4 transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-            onLoad={() => setIsLoading(false)}
-            onError={() => setIsLoading(false)}
-          />
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    <Link href={`/pokemon/${id}`}>
+      <div className={`pokemon-card rounded-xl overflow-hidden shadow-lg transition-all duration-300 pokemon-card-bg-${mainType}`}>
+        <div className="relative w-full pt-[100%] overflow-hidden bg-slate-800/50">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Image
+              src={imageUrl}
+              alt={name}
+              width={150}
+              height={150}
+              className="w-3/4 h-3/4 object-contain transform transition-transform duration-300 hover:scale-110 z-10"
+              priority
+            />
+            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-2 bg-black/20 dark:bg-white/20 rounded-full filter blur-sm"></div>
+          </div>
+        </div>
+        <div className="p-4 text-white">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-lg font-bold capitalize">{name}</h2>
+            <span className="text-sm font-semibold text-gray-300">#{id}</span>
+          </div>
+          {types.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {types.map((type) => (
+                <span 
+                  key={type} 
+                  className={`type-pill type-${type.toLowerCase()}`}
+                >
+                  {type}
+                </span>
+              ))}
             </div>
           )}
-        </div>
-        <div className="p-4">
-          <div className="font-semibold text-lg mb-1">{formattedName}</div>
-          <div className="text-gray-500 dark:text-gray-400 text-sm">#{id}</div>
         </div>
       </div>
     </Link>
