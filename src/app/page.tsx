@@ -87,7 +87,7 @@ export default function Home(): React.ReactNode {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
             {filteredPokemon.length > 0 ? (
-              filteredPokemon.map((pokemon, index) => {
+              filteredPokemon.map(pokemon => {
                 const pokemonId = allPokemon.findIndex(p => p.name === pokemon.name) + 1;
                 return (
                   <PokemonCard 

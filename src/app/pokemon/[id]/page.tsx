@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -18,11 +18,6 @@ const formatStatName = (stat: string): string => {
     'speed': 'Speed'
   };
   return statMap[stat] || stat.replace('-', ' ');
-};
-
-// Helper function to get color based on Pokemon type
-const getTypeColor = (type: string): string => {
-  return `type-${type}`;
 };
 
 export default function PokemonDetailPage(): React.ReactNode {

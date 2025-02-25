@@ -7,9 +7,14 @@ interface SearchBarProps {
   onSearch?: (term: string) => void;
 }
 
-export default function SearchBar({ onSearch }: SearchBarProps) {
+interface PokemonResult {
+  name: string;
+  url: string;
+}
+
+export default function SearchBar({ onSearch }: SearchBarProps): React.ReactNode {
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<PokemonResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
 
@@ -20,7 +25,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         try {
           const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=151`);
           const data = await response.json();
-          const filteredResults = data.results.filter((pokemon: any) => 
+          const filteredResults = data.results.filter((pokemon: PokemonResult) => 
             pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
           ).slice(0, 3); // Limit to only 3 results
           setSearchResults(filteredResults);
