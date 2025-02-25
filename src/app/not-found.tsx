@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function NotFound() {
+export default function NotFound(): React.ReactNode {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 pokemon-pattern">
       <div className="max-w-3xl w-full bg-slate-800/70 rounded-2xl p-8 text-center shadow-xl">
@@ -28,7 +28,7 @@ export default function NotFound() {
         </div>
         
         <p className="text-xl mb-8 text-gray-300">
-          Oops! Looks like the Pokémon you're looking for has escaped into the tall grass!
+          Oops! Looks like the Pokémon you&apos;re looking for has escaped into the tall grass!
         </p>
         
         <Link 

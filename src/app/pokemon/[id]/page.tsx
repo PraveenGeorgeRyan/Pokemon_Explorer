@@ -25,7 +25,7 @@ const getTypeColor = (type: string): string => {
   return `type-${type}`;
 };
 
-export default function PokemonDetailPage() {
+export default function PokemonDetailPage(): React.ReactNode {
   const params = useParams();
   const pokemonId = params.id as string;
   
@@ -37,7 +37,7 @@ export default function PokemonDetailPage() {
   const [animationType, setAnimationType] = useState<'rotate' | 'float' | 'bounce'>('float');
 
   useEffect(() => {
-    async function fetchPokemonDetail() {
+    async function fetchPokemonDetail(): Promise<void> {
       try {
         setIsLoading(true);
         const data = await getPokemonDetail(pokemonId);
@@ -53,7 +53,7 @@ export default function PokemonDetailPage() {
     fetchPokemonDetail();
   }, [pokemonId]);
 
-  const toggleAnimation = () => {
+  const toggleAnimation = (): void => {
     if (!isRotating) {
       setIsRotating(true);
       setAnimationType('rotate');
@@ -70,7 +70,7 @@ export default function PokemonDetailPage() {
     }
   };
 
-  const getAnimationClass = () => {
+  const getAnimationClass = (): string => {
     if (!isRotating) return '';
     switch (animationType) {
       case 'rotate': return 'animate-rotate';

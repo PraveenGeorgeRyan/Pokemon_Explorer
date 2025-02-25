@@ -44,7 +44,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     }
   }, [searchTerm, onSearch]);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent): void => {
     e.preventDefault();
     if (searchTerm.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
@@ -53,9 +53,9 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     }
   };
 
-  const handleResultClick = (pokemonName: string) => {
+  const handleResultClick = (pokemonName: string): void => {
     // Find the ID based on the name
-    const getPokemonId = (name: string) => {
+    const getPokemonId = (name: string): number => {
       // This is a simplified approach. In a real app, you would fetch this from the API
       const pokemonList = [
         'bulbasaur', 'ivysaur', 'venusaur', 'charmander', 'charmeleon', 'charizard',
@@ -72,7 +72,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   };
 
   return (
-    <div className="relative w-full max-w-md mx-auto mb-16"> {/* Added margin bottom */}
+    <div className="relative w-full max-w-md mx-auto mb-16">
       <form onSubmit={handleSearch} className="relative">
         <div className="relative">
           <input

@@ -5,15 +5,16 @@ import PokemonCard from './components/PokemonCard';
 import SearchBar from './components/SearchBar';
 import LoadingSpinner from './components/LoadingSpinner';
 import { getPokemonList } from './utils/api';
+import type { PokemonListItem } from './utils/api';
 
-export default function Home() {
-  const [allPokemon, setAllPokemon] = useState<any[]>([]);
-  const [filteredPokemon, setFilteredPokemon] = useState<any[]>([]);
+export default function Home(): React.ReactNode {
+  const [allPokemon, setAllPokemon] = useState<PokemonListItem[]>([]);
+  const [filteredPokemon, setFilteredPokemon] = useState<PokemonListItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPokemon = async () => {
+    const fetchPokemon = async (): Promise<void> => {
       try {
         setIsLoading(true);
         const data = await getPokemonList(151);
@@ -40,7 +41,7 @@ export default function Home() {
     }
   }, [searchTerm, allPokemon]);
 
-  const handleSearch = (term: string) => {
+  const handleSearch = (term: string): void => {
     setSearchTerm(term);
   };
   
@@ -100,7 +101,7 @@ export default function Home() {
               })
             ) : (
               <div className="col-span-full text-center py-10">
-                <p className="text-lg text-gray-600 dark:text-gray-300">No Pokémon found matching "{searchTerm}"</p>
+                <p className="text-lg text-gray-600 dark:text-gray-300">No Pokémon found matching &quot;{searchTerm}&quot;</p>
               </div>
             )}
           </div>
