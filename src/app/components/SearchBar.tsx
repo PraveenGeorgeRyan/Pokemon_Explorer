@@ -27,7 +27,7 @@ export default function SearchBar({ onSearch }: SearchBarProps): React.ReactNode
           const data = await response.json();
           const filteredResults = data.results.filter((pokemon: PokemonResult) => 
             pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
-          ).slice(0, 3); // Limit to only 3 results
+          ).slice(0, 3);
           setSearchResults(filteredResults);
         } catch (error) {
           console.error('Error searching Pokémon:', error);
@@ -42,7 +42,6 @@ export default function SearchBar({ onSearch }: SearchBarProps): React.ReactNode
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
 
-  // Call the onSearch prop whenever searchTerm changes
   useEffect(() => {
     if (onSearch) {
       onSearch(searchTerm);
@@ -59,15 +58,13 @@ export default function SearchBar({ onSearch }: SearchBarProps): React.ReactNode
   };
 
   const handleResultClick = (pokemonName: string): void => {
-    // Find the ID based on the name
     const getPokemonId = (name: string): number => {
-      // This is a simplified approach. In a real app, you would fetch this from the API
       const pokemonList = [
         'bulbasaur', 'ivysaur', 'venusaur', 'charmander', 'charmeleon', 'charizard',
         'squirtle', 'wartortle', 'blastoise', 'caterpie', 'metapod', 'butterfree'
       ];
       const index = pokemonList.findIndex(p => p === name.toLowerCase());
-      return index >= 0 ? index + 1 : 1; // Default to 1 if not found
+      return index >= 0 ? index + 1 : 1;
     };
     
     const id = getPokemonId(pokemonName);

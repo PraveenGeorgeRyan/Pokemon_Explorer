@@ -6,6 +6,10 @@
 
 A modern, responsive web application that allows users to explore information about Pokémon using data from the PokéAPI.
 
+## Live Demo
+
+The application is deployed and can be accessed at: [https://pokemon-explorer-two.vercel.app/](https://pokemon-explorer-two.vercel.app/)
+
 ## Overview
 
 This application was developed as part of a full-stack developer assignment. It demonstrates proficiency in:
@@ -19,9 +23,10 @@ This application was developed as part of a full-stack developer assignment. It 
 ## Features
 
 - **Responsive Design**: Fully responsive UI that works on all device sizes
-- **Pokémon Listing**: Browse through Pokémon with pagination
-- **Search Functionality**: Filter Pokémon by name in real-time
-- **Detailed Information**: View comprehensive details about each Pokémon
+- **Pokémon Listing**: Browse through the original 151 Pokémon
+- **Real-time Search**: Filter Pokémon by name as you type with an interactive dropdown
+- **Detailed Information**: View comprehensive details about each Pokémon including stats, types, and abilities
+- **Interactive UI Elements**: Engaging animations and loading indicators for better user experience
 - **Dark Mode Support**: Automatic theme switching based on system preferences
 
 ## Technology Stack
@@ -30,6 +35,7 @@ This application was developed as part of a full-stack developer assignment. It 
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **Data Source**: PokéAPI (https://pokeapi.co/)
+- **State Management**: React Hooks (useState, useEffect)
 
 ## Project Structure
 
@@ -38,16 +44,18 @@ pokemon_explorer/
 ├── src/
 │   ├── app/                  # Next.js app directory
 │   │   ├── components/       # Reusable UI components
-│   │   │   ├── LoadingSpinner.tsx
-│   │   │   ├── PokemonCard.tsx
-│   │   │   └── SearchBar.tsx
+│   │   │   ├── LoadingSpinner.tsx  # Loading indicator component
+│   │   │   ├── PokemonCard.tsx     # Card component for Pokémon listing
+│   │   │   └── SearchBar.tsx       # Search component with real-time filtering
 │   │   ├── pokemon/          # Pokemon detail page routes
 │   │   │   └── [id]/         # Dynamic route for Pokemon details
+│   │   │       └── page.tsx  # Pokemon detail page component
 │   │   ├── utils/            # Utility functions
 │   │   │   └── api.ts        # API integration with PokéAPI
 │   │   ├── globals.css       # Global styles
 │   │   ├── layout.tsx        # Root layout component
-│   │   └── page.tsx          # Homepage component
+│   │   ├── not-found.tsx     # 404 page component
+│   │   └── page.tsx          # Homepage component with Pokémon listing
 ├── public/                   # Static assets
 ├── next.config.ts            # Next.js configuration
 ├── tailwind.config.ts        # Tailwind CSS configuration
@@ -92,19 +100,28 @@ This application was built with a focus on:
 1. **Component Reusability**: Creating modular components that can be reused throughout the application
 2. **Type Safety**: Using TypeScript to ensure type correctness and improve developer experience
 3. **Performance Optimization**: Implementing efficient data fetching and rendering strategies
-4. **User Experience**: Designing an intuitive and visually appealing interface
+4. **User Experience**: Designing an intuitive and visually appealing interface with real-time feedback
 5. **Code Quality**: Writing clean, maintainable code with proper documentation
+6. **Accessibility**: Ensuring the application is accessible to all users
 
-## Deployment
+## Key Features Implementation
 
-The application was deployed to Vercel with minimal configuration.
+### Real-time Search
+- The search functionality filters Pokémon as the user types
+- Search results appear in a dropdown with a maximum of 3 results to prevent UI clutter
+- Results are properly positioned with appropriate z-index to avoid overlapping with other elements
+
+### Interactive UI
+- Loading spinner appears during data fetching operations
+- Pokémon cards have hover effects for better interaction feedback
+- Pokémon detail page includes interactive elements like tabs and animations
 
 ## Future Enhancements
 
 - Add pagination for browsing more Pokémon
 - Implement advanced filtering by type, ability, etc.
 - Add favorites functionality with local storage
-- Implement server-side rendering for improved SEO and performance
+- Add unit and integration tests
 
 ## Acknowledgements
 

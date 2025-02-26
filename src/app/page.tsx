@@ -46,19 +46,16 @@ export default function Home(): React.ReactNode {
   };
   
   const getPokemonTypes = (id: number): string[] => {
-    // This is a simplified mapping of Pokémon to their types
-    // In a real app, you would fetch this data from an API
     const typeMap: Record<number, string[]> = {
-      1: ['Grass', 'Poison'], // Bulbasaur
-      2: ['Grass', 'Poison'], // Ivysaur
-      3: ['Grass', 'Poison'], // Venusaur
-      4: ['Fire'], // Charmander
-      5: ['Fire'], // Charmeleon
-      6: ['Fire', 'Flying'], // Charizard
-      7: ['Water'], // Squirtle
-      8: ['Water'], // Wartortle
-      9: ['Water'], // Blastoise
-      // Add more as needed
+      1: ['Grass', 'Poison'], 
+      2: ['Grass', 'Poison'], 
+      3: ['Grass', 'Poison'], 
+      4: ['Fire'], 
+      5: ['Fire'], 
+      6: ['Fire', 'Flying'], 
+      7: ['Water'], 
+      8: ['Water'], 
+      9: ['Water'], 
     };
     
     return typeMap[id] || ['Normal'];
